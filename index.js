@@ -147,6 +147,121 @@ const run = async () => {
         })
 
 
+        app.delete('/delete_User/:id', async (req, res) => {  //xxxx==== delete data from database xxxxxxx
+            const id = req.params.id
+            console.log("deleting id", id);
+            const query = { _id: new ObjectId(id) };                                                             //𝐃𝐄𝐋𝐄𝐓𝐄
+            const Drone = await User_Data.deleteOne(query);
+            res.send(Drone)
+        })
+
+
+
+        app.get('/Datas', async (req, res) => {   //<<<==== get data from database<<<<<<<<<<
+            // https://www.mongodb.com/docs/drivers/node/current/usage-examples/find/
+            const cursor = User_Data.find();
+            const result = await cursor.toArray()                                               //𝐆𝐄𝐓
+            res.send(result)
+        })
+        app.get('/Users_Infos', async (req, res) => {   //<<<==== get data from database<<<<<<<<<<
+            // https://www.mongodb.com/docs/drivers/node/current/usage-examples/find/
+            const cursor = Users.find();
+            const result = await cursor.toArray()                                               //𝐆𝐄𝐓
+            res.send(result)
+        })
+
+
+        app.delete('/delete_User_Data/:id', async (req, res) => {  //xxxx==== delete data from database xxxxxxx
+            const id = req.params.id
+            console.log("deleting id", id);
+            const query = { _id: new ObjectId(id) };                                                             //𝐃𝐄𝐋𝐄𝐓𝐄
+            const Drone = await Users.deleteOne(query);
+            res.send(Drone)
+        })
+        app.patch('/user_data/admin/:id', async (req, res) => {
+            const id = req.params.id
+            // const update_booking = req.body;
+            // //https://www.mongodb.com/docs/drivers/node/current/usage-examples/updateOne/
+            const filter = { _id: new ObjectId(id) };                                             //PATCH ~ 𝐔𝐏𝐃𝐀𝐓𝐄_All
+            // const options = { upsert: true };
+            const update_user_data = {
+                $set: {
+                    role: 'admin'
+                },
+            };
+
+            const result = await Users.updateOne(filter, update_user_data);
+            res.send(result)
+            // console.log('clear', update_user);
+        })
+
+
+        app.patch('/user_data/instructor/:id', async (req, res) => {
+            const id = req.params.id
+            // const update_booking = req.body;
+            // //https://www.mongodb.com/docs/drivers/node/current/usage-examples/updateOne/
+            const filter = { _id: new ObjectId(id) };                                             //PATCH ~ 𝐔𝐏𝐃𝐀𝐓𝐄_All
+            // const options = { upsert: true };
+            const update_user_data = {
+                $set: {
+                    role: 'instructor'
+                },
+            };
+
+            const result = await Users.updateOne(filter, update_user_data);
+            res.send(result)
+            // console.log('clear', update_user);
+        })
+
+        app.patch('/user_data/User_Hide/:id', async (req, res) => {
+            const id = req.params.id
+            // const update_booking = req.body;
+            // //https://www.mongodb.com/docs/drivers/node/current/usage-examples/updateOne/
+            const filter = { _id: new ObjectId(id) };                                             //PATCH ~ 𝐔𝐏𝐃𝐀𝐓𝐄_All
+            // const options = { upsert: true };
+            const update_user_data = {
+                $set: {
+                    User_Hide: 'yes'
+                },
+            };
+
+            const result = await User_Data.updateOne(filter, update_user_data);
+            res.send(result)
+            // console.log('clear', update_user);
+        })
+        app.patch('/user_data/User_UnHide/:id', async (req, res) => {
+            const id = req.params.id
+            // const update_booking = req.body;
+            // //https://www.mongodb.com/docs/drivers/node/current/usage-examples/updateOne/
+            const filter = { _id: new ObjectId(id) };                                             //PATCH ~ 𝐔𝐏𝐃𝐀𝐓𝐄_All
+            // const options = { upsert: true };
+            const update_user_data = {
+                $set: {
+                    User_Hide: 'No'
+                },
+            };
+
+            const result = await User_Data.updateOne(filter, update_user_data);
+            res.send(result)
+            // console.log('clear', update_user);
+        })
+        app.patch('/user_data/Approved_or_Deny/:id', async (req, res) => {
+            const id = req.params.id
+            // const update_booking = req.body;
+            // //https://www.mongodb.com/docs/drivers/node/current/usage-examples/updateOne/
+            const filter = { _id: new ObjectId(id) };                                             //PATCH ~ 𝐔𝐏𝐃𝐀𝐓𝐄_All
+            // const options = { upsert: true };
+            const update_user_data = {
+                $set: {
+                    Status: 'Approved'
+                },
+            };
+
+            const result = await User_Data.updateOne(filter, update_user_data);
+            res.send(result)
+            // console.log('clear', update_user);
+        })
+
         app.get('/dates', async (req, res) => {   //<<<==== get data from database<<<<<<<<<<
             // https://www.mongodb.com/docs/drivers/node/current/usage-examples/find/
             const cursor = Date.find();
@@ -162,6 +277,82 @@ const run = async () => {
             const result = await cursor.toArray()                                               //𝐆𝐄𝐓
             res.send(result)
         })
+
+        // app.get('/User_Data/:id', async (req, res) => {
+        //     const id = req.params.id
+        //     const query = { _id: new ObjectId(id) };
+        //     const result = await User_Data.findOne(query);
+        //     res.send(result)
+
+        // })
+
+
+        app.get('/User_Data/:id', async (req, res) => {
+            try {
+                const id = req.params.id;
+
+                const query = { _id: new ObjectId(id) }
+                // const query = { _id: id }; 
+                const result = await User_Data.findOne(query);
+
+                if (!result) {
+                    console.error('User not found for ID:', id);
+                    return res.status(404).json({ error: 'User not found' });
+                }
+
+                res.json(result);
+            } catch (error) {
+                console.error('Error retrieving user data:', error);
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
+
+        app.put('/User_Data/:id', async (req, res) => {
+            try {
+                const id = req.params.id;
+
+                const query = { _id: new ObjectId(id) } // Assuming _id is a string in your data
+                const updatedData = req.body;
+
+                // Update the user data in the MongoDB collection
+                const result = await User_Data.updateOne(query, { $set: updatedData });
+
+                if (!result) {
+                    console.error('User not found for ID:', id);
+                    return res.status(404).json({ error: 'User not found' });
+                }
+
+                res.json(result);
+            } catch (error) {
+                console.error('Error retrieving user data:', error);
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
+
+
+
+        // app.put('/User_Data/:id', async (req, res) => {
+        //     try {
+        //         const id = req.params.id;
+
+        //         const query = { _id: new ObjectId(id) };
+        //         const updatedData = req.body;
+
+        //         // Update the user data in the MongoDB collection
+        //         const result = await User_Data.updateOne(query, { $set: updatedData });
+
+        //         if (result.modifiedCount === 0) {
+        //             return res.status(404).json({ error: 'User not found' });
+        //         }
+
+        //         res.json({ message: 'User data updated successfully', updatedUser: updatedData });
+        //     } catch (error) {
+        //         console.error('Error updating user data:', error);
+        //         res.status(500).json({ error: 'Internal Server Error' });
+        //     }
+        // });
+
+
 
 
         app.get('/result/:id', async (req, res) => {
@@ -195,7 +386,18 @@ const run = async () => {
             }
         });
 
-
+        app.patch("/change-date/:id", async (req, res) => {
+            const { dateValue } = req.body;
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const update = {
+                $set: {
+                    date: dateValue,
+                },
+            };
+            const result = await Date.updateOne(filter, update);
+            res.send(result);
+        });
 
 
         //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
